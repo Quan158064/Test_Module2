@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Application</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            width: 100%;
+            background-color: #f0f0f0;
+        }
+
+        .container {
+            width: 80%;
+            margin: auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .container h2 {
+            margin-bottom: 20px;
+        }
+
+        .container input {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .container button {
+            padding: 10px;
+            width: 100%;
+            border: none;
+            border-radius: 5px;
+            background-color: #007BFF;
+            color: white;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        .container button:hover {
+            background-color: #0056b3;
+        }
+
+        .message {
+            margin-top: 10px;
+            font-size: 14px;
+            color: red;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        table,
+        th,
+        td {
+            border: 1px solid #ddd;
+        }
+
+        th,
+        td {
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        .pagination {
+            margin-top: 20px;
+            display: flex;
+            width: 50%;
+            margin: auto;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .pagination button {
+            padding: 5px 10px;
+            margin-right: 5px;
+            border: none;
+            background-color: #007BFF;
+            color: white;
+            cursor: pointer;
+            margin-bottom: 0;
+        }
+
+        .pagination button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h2>Login</h2>
+        <input type="email" id="login-email" placeholder="Email">
+        <input type="password" id="login-password" placeholder="Password">
+        <button onclick="login()">Login</button>
+        <div class="message" id="login-message"></div>
+
+        <h2>Register</h2>
+        <input type="text" id="register-first-name" placeholder="First Name">
+        <input type="text" id="register-last-name" placeholder="Last Name">
+        <input type="email" id="register-email" placeholder="Email">
+        <input type="password" id="register-password" placeholder="Password">
+        <button onclick="register()">Register</button>
+        <div class="message" id="register-message"></div>
+
+        <h2>Search Users</h2>
+        <input type="text" id="user-keyword" placeholder="Keyword">
+        <button onclick="searchUsers()">Search</button>
+        <div id="user-list"></div>
+
+        <h1>Posts List</h1>
+        <table id="posts-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Title</th>
+                    <th>Content</th>
+                    <th>Image</th>
+                    <th>Created At</th>
+                    <th>Updated At</th>
+                    <th>User</th>
+                </tr>
+            </thead>
+            <tbody id="posts-list-body">
+
+            </tbody>
+        </table>
+        <div class="pagination">
+            <button id="prev-btn" disabled>&lt; Prev</button>
+            <span id="page-info" style="width: 100%;text-align: center;"></span>
+            <button id="next-btn">Next &gt;</button>
+        </div>
+        <h2>View Post Details</h2>
+        <input type="number" id="post-id" placeholder="Post ID">
+        <button onclick="viewPostDetails()">View Details</button>
+        <div id="post-details"></div>
+
+        <h2>Search Posts by User</h2>
+        <input type="email" id="user-email" placeholder="User Email">
+        <button onclick="searchPostsByUser()">Search Posts</button>
+        <div id="user-posts"></div>
+    </div>
+
+    <script src="users.js"></script>
+    <script src="posts.js"></script>
+    <script>
+        function login() {
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            const messageElement = document.getElementById('login-message');
+
+            if (!email || !password) {
+                messageElement.textContent = 'Hãy nhập đầy đủ thông tin';
+                return;
+            }
+
+            const users = JSON.parse(localStorage.getItem('users'));
+            const user = users.find(user => user.email === email && user.password === password);
+
+            if (user) {
+                messageElement.textContent = `Xin chào ${user.first_name} ${user.last_name}`;
+                messageElement.style.color = 'green';
+                document.getElementById('login-email').value = '';
+                document.getElementById('login-password').value = '';
+            } else {
+                messageElement.textContent = 'Thông tin tài khoản không chính xác';
+                messageElement.style.color = 'red';
+            }
+        }
+
+        function register() {
+            const firstName = document.getElementById('register-first-name').value;
+            const lastName = document.getElementById('register-last-name').value;
+            const email = document.getElementById('register-email').value;
+            const password = document.getElementById('register-password').value;
+            const messageElement = document.getElementById('register-message');
+
+            if (!firstName || !lastName || !email || !password) {
+                messageElement.textContent = 'Hãy nhập đầy đủ thông tin';
+                return;
+            }
+
+            const users = JSON.parse(localStorage.getItem('users'));
+            const existingUser = users.find(user => user.email === email);
+
+            if (existingUser) {
+                messageElement.textContent = 'Email này đã có tài khoản';
+                messageElement.style.color = 'red';
+            } else {
+                const newUser = {
+                    id: users.length ? Math.max(...users.map(user => user.id)) + 1 : 1,
+                    first_name: firstName,
+                    last_name: lastName,
+                    email: email,
+                    password: password
+                };
+                users.push(newUser);
+                localStorage.setItem('users', JSON.stringify(users));
+                document.getElementById('register-first-name').value = '';
+                document.getElementById('register-last-name').value = '';
+                document.getElementById('register-email').value = '';
+                document.getElementById('register-password').value = '';
+                messageElement.textContent = 'Đăng ký thành công';
+                messageElement.style.color = 'green';
+            }
+        }
+
+        function searchUsers() {
+            const keyword = document.getElementById('user-keyword').value.toLowerCase();
+            const userList = document.getElementById('user-list');
+            userList.innerHTML = '';
+
+            const filteredUsers = keyword ?
+                users.filter(user =>
+                    user.first_name.toLowerCase().includes(keyword) ||
+                    user.last_name.toLowerCase().includes(keyword) ||
+                    user.email.toLowerCase().includes(keyword)
+                ) :
+                users;
+
+            filteredUsers.forEach(user => {
+                const userItem = document.createElement('div');
+                userItem.textContent =
+                    `ID: ${user.id}, Name: ${user.first_name} ${user.last_name}, Email: ${user.email}`;
+                userList.appendChild(userItem);
+            });
+        }
+
+        const postsPerPage = 10;
+        let currentPage = 1;
+
+        function listPosts() {
+            const posts = JSON.parse(localStorage.getItem('posts')) || [];
+            const startIndex = (currentPage - 1) * postsPerPage;
+            const endIndex = startIndex + postsPerPage;
+            const paginatedPosts = posts.slice(startIndex, endIndex);
+
+            const postsTable = document.getElementById('posts-table');
+            const postsListBody = document.getElementById('posts-list-body');
+            postsListBody.innerHTML = '';
+
+            paginatedPosts.forEach(post => {
+                const user = JSON.parse(localStorage.getItem('users')).find(user => user.id === post.user_id);
+                const row = document.createElement('tr');
+                row.innerHTML = `
+            <td>${post.id}</td>
+            <td>${post.title}</td>
+            <td>${post.content}</td>
+            <td><a href="${post.image}" target="_blank">View Image</a></td>
+            <td>${post.created_at}</td>
+            <td>${post.updated_at}</td>
+            <td>${user ? `${user.first_name} ${user.last_name}` : 'Unknown'}</td>
+        `;
+                postsListBody.appendChild(row);
+            });
+
+            updatePagination();
+        }
+
+        function updatePagination() {
+            const posts = JSON.parse(localStorage.getItem('posts')) || [];
+            const totalPages = Math.ceil(posts.length / postsPerPage);
+
+            const pageInfo = document.getElementById('page-info');
+            pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
+
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+
+            prevBtn.disabled = currentPage === 1;
+            nextBtn.disabled = currentPage === totalPages;
+
+            prevBtn.addEventListener('click', () => {
+                if (currentPage > 1) {
+                    currentPage--;
+                    listPosts();
+                }
+            });
+
+            nextBtn.addEventListener('click', () => {
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    listPosts();
+                }
+            });
+        }
+
+
+        listPosts();
+
+        // hiển thị chi tiết của một bài đăng dựa trên ID
+        function viewPostDetails() {
+            const postIdInput = document.getElementById('post-id');
+            const postId = parseInt(postIdInput.value);
+
+            if (!postId || postId <= 0) {
+                alert('Vui lòng nhập ID hợp lệ của bài đăng.');
+                return;
+            }
+
+            const posts = JSON.parse(localStorage.getItem('posts')) || [];
+            const post = posts.find(post => post.id === postId);
+
+            if (post) {
+                const user = JSON.parse(localStorage.getItem('users')).find(user => user.id === post.user_id);
+                const postDetails = `
+            <h3>Post Details</h3>
+            <p><strong>ID:</strong> ${post.id}</p>
+            <p><strong>Title:</strong> ${post.title}</p>
+            <p><strong>Content:</strong> ${post.content}</p>
+            <p><strong>Image:</strong> <a href="${post.image}" target="_blank">View Image</a></p>
+            <p><strong>Creator:</strong> ${user ? `${user.first_name} ${user.last_name}` : 'Unknown'}</p>
+            <p><strong>Created At:</strong> ${post.created_at}</p>
+            <p><strong>Updated At:</strong> ${post.updated_at}</p>
+        `;
+                const postDetailsContainer = document.getElementById('post-details');
+                postDetailsContainer.innerHTML = postDetails;
+            } else {
+                alert('Không tìm thấy bài đăng với ID đã nhập.');
+            }
+        }
+
+        // tìm kiếm và hiển thị các bài đăng của một người dùng dựa trên email của họ
+        function searchPostsByUser() {
+            const userEmailInput = document.getElementById('user-email');
+            const userEmail = userEmailInput.value.trim().toLowerCase();
+
+            if (!userEmail) {
+                alert('Vui lòng nhập email của người dùng để tìm kiếm bài đăng.');
+                return;
+            }
+
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+            const user = users.find(user => user.email === userEmail);
+
+            if (user) {
+                const posts = JSON.parse(localStorage.getItem('posts')) || [];
+                const userPosts = posts.filter(post => post.user_id === user.id);
+
+                if (userPosts.length > 0) {
+                    let userPostsList = '<h3>Posts by User</h3><ul>';
+                    userPosts.forEach(post => {
+                        userPostsList +=
+                            `<li>ID: ${post.id}, Title: ${post.title}, Created At: ${post.created_at}</li>`;
+                    });
+                    userPostsList += '</ul>';
+                    const userPostsContainer = document.getElementById('user-posts');
+                    userPostsContainer.innerHTML = userPostsList;
+                } else {
+                    alert('Người dùng này chưa có bài đăng nào.');
+                }
+            } else {
+                alert('Không tìm thấy người dùng với email đã nhập.');
+            }
+        }
+    </script>
+</body>
+
+</html>

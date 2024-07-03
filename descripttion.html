@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo App</title>
+    <!-- Câu 1 -css -->
+ <!-- <style>   
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.todo-container {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    width: 300px;
+}
+
+.todo-input {
+    margin-bottom: 10px;
+}
+
+.todo-input input {
+    padding: 8px;
+    width: 60%;
+    margin-right: 10px;
+}
+
+.todo-input button {
+    padding: 8px;
+    cursor: pointer;
+}
+
+.tabs {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 10px;
+}
+
+.tabs button {
+    padding: 10px;
+    cursor: pointer;
+    border: none;
+    background-color: #f0f0f0;
+    transition: background-color 0.3s;
+}
+
+.tabs button.active {
+    background-color: #4CAF50;
+    color: white;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+li {
+    margin-bottom: 5px;
+    cursor: pointer;
+}
+
+.completed {
+    text-decoration: line-through;
+    opacity: 0.6;
+}
+
+.delete-button {
+    background-color: red;
+    color: white;
+    border: none;
+    padding: 5px;
+    cursor: pointer;
+    border-radius: 4px;
+    margin-left: 10px;
+}
+</style> -->
+
+    <!-- Câu2 -->
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: auto;
+        }
+
+        input,
+        button {
+            padding: 10px;
+            margin: 5px;
+            width: 100%;
+        }
+
+        .output {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f0f0f0;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Câu 1 Click vào công việc để xóa  -->
+    
+<!-- <div class="todo-container">
+    <h1>Todo App</h1>
+    <div class="todo-input">
+        <input type="text" id="taskInput" placeholder="Enter task...">
+        <button onclick="addTask()">Add Task</button>
+    </div>
+    <div class="tabs">
+        <button id="allTab" onclick="showAll()" class="active">All</button>
+        <button id="activeTab" onclick="showActive()">Active</button>
+        <button id="completedTab" onclick="showCompleted()">Completed</button>
+    </div>
+    <ul id="taskList"></ul>
+</div>
+    <script>
+        // Câu 1
+        function getTasks() {
+            return JSON.parse(localStorage.getItem('tasks')) || [];
+        }
+
+
+        function saveTasks(tasks) {
+            localStorage.setItem('tasks', JSON.stringify(tasks));
+        }
+
+
+        function addTask() {
+            const taskInput = document.getElementById('taskInput');
+            const taskText = taskInput.value.trim();
+
+            if (taskText !== '') {
+                const tasks = getTasks();
+                tasks.push({
+                    text: taskText,
+                    completed: false
+                });
+                saveTasks(tasks);
+                renderTasks();
+                taskInput.value = '';
+            }
+        }
+
+
+        function toggleTask(index) {
+            const tasks = getTasks();
+            tasks[index].completed = !tasks[index].completed;
+            saveTasks(tasks);
+            renderTasks();
+        }
+
+
+        function deleteTask(index) {
+            const tasks = getTasks();
+            tasks.splice(index, 1);
+            saveTasks(tasks);
+            renderTasks();
+        }
+
+
+        function showAll() {
+            document.getElementById('allTab').classList.add('active');
+            document.getElementById('activeTab').classList.remove('active');
+            document.getElementById('completedTab').classList.remove('active');
+            renderTasks();
+        }
+
+
+        function showActive() {
+            document.getElementById('allTab').classList.remove('active');
+            document.getElementById('activeTab').classList.add('active');
+            document.getElementById('completedTab').classList.remove('active');
+            const tasks = getTasks().filter(task => !task.completed);
+            renderTasks(tasks);
+        }
+
+
+        function showCompleted() {
+            document.getElementById('allTab').classList.remove('active');
+            document.getElementById('activeTab').classList.remove('active');
+            document.getElementById('completedTab').classList.add('active');
+            const tasks = getTasks().filter(task => task.completed);
+            renderTasks(tasks);
+        }
+
+
+        function renderTasks(filterTasks = getTasks()) {
+            const taskList = document.getElementById('taskList');
+            taskList.innerHTML = '';
+
+            filterTasks.forEach((task, index) => {
+                const li = document.createElement('li');
+                li.textContent = task.text;
+                li.className = task.completed ? 'completed' : '';
+                li.onclick = () => toggleTask(index);
+
+                const deleteButton = document.createElement('button');
+                deleteButton.textContent = 'Delete';
+                deleteButton.className = 'delete-button';
+                deleteButton.onclick = (event) => {
+                    event.stopPropagation();
+                    deleteTask(index);
+                };
+
+                li.appendChild(deleteButton);
+                taskList.appendChild(li);
+            });
+        }
+
+        renderTasks();
+    </script> -->
+
+    <!-- Câu 2 -->
+    <div class="container">
+        <h2>Unique Elements from Arrays</h2>
+        <input type="text" id="array1" placeholder="Nhập array vd : [1, 2, &quot;a&quot;]">
+        <input type="text" id="array2" placeholder="Nhập array vd : [1, 2, &quot;b&quot;]">
+        <button onclick="findUniqueElements()">Find Unique Elements</button>
+        <div class="output" id="output"></div>
+    </div>
+    <script>
+        function findUniqueElements() {
+            const array1Input = document.getElementById('array1').value;
+            const array2Input = document.getElementById('array2').value;
+
+            let array1, array2;
+
+            try {
+                array1 = JSON.parse(array1Input);
+                array2 = JSON.parse(array2Input);
+            } catch (e) {
+                alert('Vui lòng nhập mảng hợp lệ. ');
+                return;
+            }
+
+            if (!Array.isArray(array1) || !Array.isArray(array2)) {
+                alert('Vui lòng nhập mảng hợp lệ.');
+                return;
+            }
+
+            const uniqueArray = getUniqueElements(array1, array2);
+            document.getElementById('output').innerText = `Thành phần cần tìm : ${JSON.stringify(uniqueArray)}`;
+        }
+
+        function getUniqueElements(array1, array2) {
+            const combinedArray = [...array1, ...array2];
+            const uniqueArray = combinedArray.filter((item, index) => combinedArray.indexOf(item) === combinedArray
+                .lastIndexOf(item));
+            return uniqueArray;
+        }
+    </script>
+</body>
+
+</html>
